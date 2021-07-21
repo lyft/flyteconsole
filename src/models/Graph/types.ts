@@ -1,12 +1,42 @@
-import { NodeExecution } from 'models/Execution/types';
-import { TaskTemplate } from 'models/Task/types';
+import { CompiledNode } from 'models/Node/types';
 
-/** A flyte-graph compatible node representation which also includes all of the
- * additional task data needed for our custom rendering
+/* Types of nodes */
+export enum dTypes {
+    task,
+    primary,
+    branch,
+    subworkflow,
+    start,
+    end,
+    nestedEnd,
+    nestedStart,
+    nestedMaxDepth
+}
+
+/**
+ * DAG edge
+ * @sourceId    dNode.id
+ * @targetId    dNode.id
  */
-export interface DAGNode {
-    execution?: NodeExecution;
+export interface dEdge {
+    sourceId: string;
+    targetId: string;
+}
+
+/**
+ * DAG node
+ * @id      used for mapping edges
+ * @type    determines which UX component to render
+ * @name    for display in UX
+ * @value   flyte node data bound to this node
+ * @nodes   children
+ * @edges   edges
+ */
+export interface dNode {
     id: string;
-    parentIds?: string[];
-    taskTemplate?: TaskTemplate;
+    type: dTypes;
+    name: string;
+    value?: CompiledNode;
+    nodes: Array<dNode>;
+    edges: Array<dEdge>;
 }
